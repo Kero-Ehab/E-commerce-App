@@ -5,7 +5,10 @@ import { AppService } from './app.service';
 import { UserMangmentModule } from './user-mangment/user-mangment.module';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://localhost:27017/e-commerce'), UserMangmentModule],
+  imports: [
+    MongooseModule.forRoot('mongodb://localhost:27017/e-commerce'),
+    UserMangmentModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from './schema/user-schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -13,6 +14,15 @@ export class UserMangmentService {
         return createuser.save();
     }
     async findAll(){
-        return this.userModel.find().exec();
+        return await this.userModel.find();
+    }
+    async findOne(id:string){
+        return await this.userModel.findById(id);
+    }
+    async delete(id:string){
+        return await this.userModel.findByIdAndDelete(id);
+    }
+    async update(updateUserDto: UpdateUserDto, id:string){
+        return await this.userModel.findByIdAndUpdate(id, updateUserDto, {new:true});
     }
 }
