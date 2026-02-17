@@ -1,8 +1,7 @@
-import { Controller, Post,Body, Get, Param, Delete, Patch } from '@nestjs/common';
+import { Controller, Post,Body, Get, Param, Delete, Patch, Query, ParseIntPipe } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserMangmentService } from './user-mangment.service';
-
 @Controller('user-mangment')
 export class UserMangmentController {
     constructor(
@@ -14,8 +13,11 @@ export class UserMangmentController {
         return this.userMangmentService.create(createUserDto); 
     }
     @Get('findAll')
-    findAll(){
-        return this.userMangmentService.findAll();
+    findAll(
+        @Query('pageNumber', ParseIntPipe) pageNumber:number,
+        @Query('reviewPerPage', ParseIntPipe) reviewPerPage:number
+    ){
+        return this.userMangmentService.findAll(pageNumber, reviewPerPage);
     }
     @Get('findOne/:id')
     findOne(@Param('id') id:string){
