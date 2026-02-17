@@ -34,13 +34,13 @@ export class UserMangmentService {
 
     async findAll(pageNumber?:number, reviewPerPage?:number){
         if (pageNumber && reviewPerPage) {
-        return await this.userModel
-            .find({})
-            .skip(reviewPerPage * (pageNumber - 1))
-            .limit(reviewPerPage)
-            .select('-password');
-    }
-    return await this.userModel.find().select('-password');
+            return await this.userModel
+                .find({})
+                .skip(reviewPerPage * (pageNumber - 1))
+                .limit(reviewPerPage)
+                .select('-password');
+        }
+        return await this.userModel.find().select('-password');
     }
 
     async findOne(id:string){
