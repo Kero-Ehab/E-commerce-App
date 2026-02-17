@@ -13,10 +13,11 @@ export class CreateUserDto {
     @IsNotEmpty()
     @Length(6, 60)
     @IsString()
+    
     password:string;
     @IsOptional()
     @IsString()
-    phonenumber?:string;
+    phoneNumber?:string;
     @IsOptional()
     @IsInt()
     age?:number;

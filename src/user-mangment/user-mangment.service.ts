@@ -15,11 +15,8 @@ export class UserMangmentService {
     ){}
 
     async create(createUserDto: CreateUserDto){
-        const createuser = new this.userModel(createUserDto);
-        if(createuser.email === undefined || createuser.email === null){
-            throw new Error("Email is required");
-        }
-        const emailExists = await this.userModel.findOne({email: createuser.email});
+        
+        const emailExists = await this.userModel.findOne({email: createUserDto.email});
         if(emailExists){
             throw new Error("Email already exists");
         }
@@ -27,11 +24,12 @@ export class UserMangmentService {
         const saltRoundsNumber = saltRounds ? parseInt(saltRounds) : 10;
         const hashedPassword = await bcrypt.hash(createUserDto.password, saltRoundsNumber);
         
-        const user = new this.userModel({...createUserDto, password:hashedPassword});
+        const user = new this.userModel({...createUserDto, password:hashedPassword });
 
         return user.save();
     }
 
+    // TODO: ADD Filter 
     async findAll(pageNumber?:number, reviewPerPage?:number){
         if (pageNumber && reviewPerPage) {
             return await this.userModel
@@ -39,7 +37,9 @@ export class UserMangmentService {
                 .skip(reviewPerPage * (pageNumber - 1))
                 .limit(reviewPerPage)
                 .select('-password');
-        }
+                
+            }
+        
         return await this.userModel.find().select('-password');
     }
 
@@ -51,6 +51,7 @@ export class UserMangmentService {
         if(!user){
             throw new NotFoundException("User not found");
         }
+        
         return user;
     }
     async delete(id:string){
@@ -61,7 +62,7 @@ export class UserMangmentService {
         if(!user){
             throw new NotFoundException("User not found");
         }
-        return await this.userModel.findByIdAndDelete(id);
+        return {message:"User deleted successfully "}
     }
 
     async update(updateUserDto: UpdateUserDto, id:string){

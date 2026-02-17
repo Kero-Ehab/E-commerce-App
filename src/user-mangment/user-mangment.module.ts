@@ -9,6 +9,5 @@ import { MongooseModule } from '@nestjs/mongoose';
   ],
   controllers: [UserMangmentController],
   providers: [UserMangmentService],
-  exports:[UserMangmentService]
 })
 export class UserMangmentModule {}

@@ -1,17 +1,21 @@
-import { ConflictException, Inject, Injectable} from '@nestjs/common';
+import { ConflictException, Inject, Injectable, UnauthorizedException} from '@nestjs/common';
 import { RegisterDTO } from './dto/register.dto';
+import { LoginDTO } from './dto/login.dto';
+import {ChangePasswordDTO} from './dto/changePassword.dto'
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/user-mangment/schema/user-schema';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt'
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   private readonly saltRounds:number
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private jwtService: JwtService
   ){
     this.saltRounds= Number(this.configService.get<string>('BCRYPT_SALT_ROUNDS','10'))
   }
@@ -27,22 +31,67 @@ export class AuthService {
         throw new ConflictException('Phone number already registered');
       }
       const hashPassword = await bcrypt.hash(password, this.saltRounds)
-      const user = new this.userModel({
-          name,
-          email,
-          phoneNumber,
-          password:hashPassword,
-      })
-      await user.save();
+      const user =  await this.userModel.create({...RegisterDTO, password:hashPassword})
+      
       return {
         user:{
         id: user._id.toString(),
         name: user.name,
         email: user.email,
-        phoneNumber: String(user.phoneNumber || ''),
-        //password:hashPassword,
-        
+        phoneNumber: user.phoneNumber || ''        
       }}
     }
+
+    async login(loginDto:LoginDTO){
+      const {email, password} = loginDto;
+      const userExist = await this.userModel.findOne({email}).select('+password')
+      if(!userExist){
+        throw new UnauthorizedException('Invalid Email or Password')
+      }
+      console.log("email done")
+      const passwordCheck = await bcrypt.compare(password,userExist.password )
+      if(!passwordCheck){
+        throw new UnauthorizedException('Invalid Email or Password')
+      }
+      const payload = {
+        email:userExist.email,
+        password:userExist.password
+      }
+      //return {message:"login done"}
+      const acessToken = await this.jwtService.signAsync(payload)
+
+      const refreshToken = await this.jwtService.signAsync(payload)
+
+      return {acessToken, refreshToken }
+
+
+    }
+
+    async logout(userId:string){
+      await this.userModel.findByIdAndUpdate(userId,{
+        refreshToken:null
+      })
+      return { message: 'Logged out successfully' };
+    }
+
+    async changePassword(changePasswordDTO:ChangePasswordDTO){
+      const {email, oldPassword, newPassword} = changePasswordDTO;
+      const userExist = await this.userModel.findOne({email}).select('+password')
+      if(!userExist){
+        throw new UnauthorizedException('Invalid Email');
+      }
+      const checkPassword = await bcrypt.compare(oldPassword, userExist.password)
+      if(!checkPassword){
+        throw new UnauthorizedException('Invalid Password');
+      }
+      const hashPassword = await bcrypt.hash(newPassword, this.saltRounds)
+      userExist.password=hashPassword;
+
+      await userExist.save()
+
+      return {message:"password updated sucessfully"}
+
+    }
+
 
 }

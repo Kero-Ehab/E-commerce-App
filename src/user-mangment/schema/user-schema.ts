@@ -1,6 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 
-@Schema()
+@Schema({timestamps:true})
 export class User {
     @Prop({required: true})
     name:string;
@@ -11,19 +11,21 @@ export class User {
         lowercase:true,
     })
     email:string;
-    @Prop({required: true})
-    password:string;
     @Prop({
         required: true,
+        select:false
+    })
+    password:string;
+   
+    @Prop({
+        required: false,
         unique: true,
         trim:true,
     })
-    phoneNumber?:string;
+    phoneNumber:string;
     @Prop()
     age?:number;    
 
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
