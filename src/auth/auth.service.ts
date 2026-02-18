@@ -1,13 +1,15 @@
-import { ConflictException, Inject, Injectable, UnauthorizedException} from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException} from '@nestjs/common';
 import { RegisterDTO } from './dto/register.dto';
 import { LoginDTO } from './dto/login.dto';
 import {ChangePasswordDTO} from './dto/changePassword.dto'
+import { ForgetPassword } from './dto/forgetPassword.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/user-mangment/schema/user-schema';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
+import { EmailService } from 'src/common/email/email.service';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +17,8 @@ export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private configService: ConfigService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private readonly emailService:EmailService 
   ){
     this.saltRounds= Number(this.configService.get<string>('BCRYPT_SALT_ROUNDS','10'))
   }
@@ -61,6 +64,9 @@ export class AuthService {
       const acessToken = await this.jwtService.signAsync(payload)
 
       const refreshToken = await this.jwtService.signAsync(payload)
+      
+      
+      await this.emailService.sendLogInEmail(userExist.email)
 
       return {acessToken, refreshToken }
 
@@ -89,9 +95,29 @@ export class AuthService {
 
       await userExist.save()
 
+      //generate token
+
       return {message:"password updated sucessfully"}
 
     }
+
+    async forgetPassword(forgetPassword:ForgetPassword){
+      const {email} = forgetPassword;
+      const isUserExist = await this.userModel.findOne({email})
+      if(!isUserExist){
+        throw new UnauthorizedException("Invalid Email");
+      }
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+      await this.emailService.sendResetPasswordTemplate(email,otp) 
+      
+      const user = await this.userModel.findByIdAndUpdate(isUserExist._id, {otp, expiresAt})
+      
+      return {message:"OTP SEND SUCESSFULLY"}
+
+    }
+
 
 
 }

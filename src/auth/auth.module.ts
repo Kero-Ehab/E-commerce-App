@@ -6,9 +6,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/user-mangment/schema/user-schema';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { EmailModule } from 'src/common/email/email.module';
 @Module({
   imports: [
     UserMangmentModule,
+    MailerModule,
+    EmailModule,
     MongooseModule.forFeature([
       {name:User.name, schema:UserSchema}
     ]),

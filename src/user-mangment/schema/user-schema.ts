@@ -16,7 +16,6 @@ export class User {
         select:false
     })
     password:string;
-   
     @Prop({
         required: false,
         unique: true,
@@ -25,6 +24,12 @@ export class User {
     phoneNumber:string;
     @Prop()
     age?:number;    
+
+    @Prop()
+    opt:string;
+
+    @Prop()
+    expiresAt:Date
 
 }
 

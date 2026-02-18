@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { UserMangmentModule } from './user-mangment/user-mangment.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { EmailModule } from './common/email/email.module';
 
 
 @Module({
@@ -20,7 +21,8 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({
       isGlobal:true,
     }),
-    AuthModule
+    AuthModule,
+    EmailModule
   ],
   controllers: [AppController],
   providers: [AppService],
