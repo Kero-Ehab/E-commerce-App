@@ -6,12 +6,16 @@ import { UserMangmentModule } from './user-mangment/user-mangment.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { EmailModule } from './common/email/email.module';
+import { CategoryModule } from './category/category.module';
 
 
 @Module({
   imports: [
       MongooseModule.forRootAsync({
-        imports:[ConfigModule],
+        imports:[
+          ConfigModule,
+          CategoryModule,
+        ],
         inject:[ConfigService],
         useFactory: async (configService: ConfigService) =>({
           uri:configService.get<string>('MONGO_URI'),
@@ -22,7 +26,8 @@ import { EmailModule } from './common/email/email.module';
       isGlobal:true,
     }),
     AuthModule,
-    EmailModule
+    EmailModule,
+    CategoryModule
   ],
   controllers: [AppController],
   providers: [AppService],
