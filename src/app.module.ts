@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { EmailModule } from './common/email/email.module';
 import { CategoryModule } from './category/category.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 
 @Module({
@@ -15,6 +16,7 @@ import { CategoryModule } from './category/category.module';
         imports:[
           ConfigModule,
           CategoryModule,
+          UploadsModule,
         ],
         inject:[ConfigService],
         useFactory: async (configService: ConfigService) =>({
