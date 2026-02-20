@@ -4,12 +4,14 @@ import { RegisterDTO } from './dto/register.dto';
 import { LoginDTO } from './dto/login.dto';
 import { ChangePasswordDTO } from './dto/changePassword.dto';
 
+
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService
   ) {}
 
+    
     @Post('register')
     register(@Body() registerDto:RegisterDTO){
       return this.authService.register(registerDto)

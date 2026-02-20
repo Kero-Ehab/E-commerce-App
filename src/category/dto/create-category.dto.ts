@@ -1,5 +1,4 @@
-import { SchemaFactory } from "@nestjs/mongoose";
-import { IsNotEmpty, IsString,  IsUrl,  MaxLength, MinLength } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString,  IsUrl,  MaxLength, MinLength } from "class-validator";
 
 
 export class CreateCategoryDto {
@@ -11,6 +10,7 @@ export class CreateCategoryDto {
 
     @IsString()
     @IsUrl()
+    @IsOptional()
     //@IsURL({ require_protocol: true })
     image: string
 

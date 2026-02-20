@@ -8,6 +8,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from 'src/common/email/email.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guards/auth.guards';
+import { AuthRolesGuard } from './guards/roles.guards';
 @Module({
   imports: [
     UserMangmentModule,
@@ -25,10 +28,20 @@ import { EmailModule } from 'src/common/email/email.module';
       })
 
     }),
+
     
     
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+  // {
+  //   provide:APP_GUARD,
+  //   useClass:AuthGuard,
+  // },{
+  //   provide:APP_GUARD,
+  //   useClass:AuthRolesGuard,
+  // }
+  ],
 })
 export class AuthModule {}

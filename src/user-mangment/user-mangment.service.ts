@@ -58,7 +58,7 @@ export class UserMangmentService {
         if (!Types.ObjectId.isValid(id)) {
             throw new BadRequestException('Invalid user id');
         }
-        const user =  await this.userModel.findById(id).select('-password');
+        const user =  await this.userModel.findByIdAndDelete(id);
         if(!user){
             throw new NotFoundException("User not found");
         }
