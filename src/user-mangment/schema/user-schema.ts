@@ -25,6 +25,13 @@ export class User {
     @Prop()
     age?:number;    
 
+    @Prop({
+        type: String,
+        required: false,
+        default: null
+    })
+    profileImage: string | null
+
     @Prop()
     opt:string;
 

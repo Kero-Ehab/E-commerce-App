@@ -21,4 +21,8 @@ export class CreateUserDto {
     @IsOptional()
     @IsInt()
     age?:number;
+
+    @IsString()
+    @IsOptional()
+    profileImage:string
 }

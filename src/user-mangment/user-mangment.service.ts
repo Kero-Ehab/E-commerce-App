@@ -7,6 +7,15 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { Types } from 'mongoose';
+import { join } from 'node:path';
+import { unlinkSync } from 'node:fs';
+
+
+
+
+
+
+
 @Injectable()
 export class UserMangmentService {
     constructor(
@@ -79,4 +88,44 @@ export class UserMangmentService {
 
         return updatedUser;
     }
+    
+    async setProfileImage(userId: string, newProfileImage:string){
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new BadRequestException('Invalid user id');
+        }
+        const user =  await this.userModel.findById(userId).select('-password');
+        if(!user){
+            throw new NotFoundException("User not found");
+        }
+        if(user.profileImage === null){
+            user.profileImage = newProfileImage;
+        }else{
+            await this.removeProfileImage(userId);
+            user.profileImage = newProfileImage;
+        }
+
+        
+        await user.save();
+        return 'ok';
+    }
+
+    async removeProfileImage(userId: string){
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new BadRequestException('Invalid user id');
+        }
+        const user =  await this.userModel.findById(userId).select('-password');
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+        if(user.profileImage === null){
+            throw new BadRequestException("there is no profile image")
+        }
+        const imagePath = join(process.cwd(),`/images/users/${user.profileImage}`)
+        unlinkSync(imagePath)
+        user.profileImage = null;
+        await user.save();
+        
+        return 'ok';
+    }
+
 }
