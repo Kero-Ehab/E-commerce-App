@@ -48,17 +48,17 @@ export class UserMangmentController {
         return this.userMangmentService.update(updateUserDto, id);
     }
 
-    @Post('upload-image')
-    //@UseGuards(AuthGuard)
-    @UseInterceptors(FileInterceptor('user-image'))
-    uploadProfileImage(
-        @UploadedFile() file: Express.Multer.File,
-        //@CurrentUser() payload: JWTPayload
-    ){
-        if(!file) throw new BadRequestException("no image provided")
-        //return this.userMangmentService.setProfileImage(payload.id, file.filename) 
-        return 'ok'
-    }
+    // @Post('upload-image')
+    // //@UseGuards(AuthGuard)
+    // @UseInterceptors(FileInterceptor('user-image'))
+    // uploadProfileImage(
+    //     @UploadedFile() file: Express.Multer.File,
+    //     //@CurrentUser() payload: JWTPayload
+    // ){
+    //     if(!file) throw new BadRequestException("no image provided")
+    //     //return this.userMangmentService.setProfileImage(payload.id, file.filename) 
+    //     return 'ok'
+    // }
 
 
     // @Delete("remove-profile-image")

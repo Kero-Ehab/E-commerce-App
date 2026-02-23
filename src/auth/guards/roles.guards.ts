@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { CURRENT_USER_KEY } from 'src/common/constants.ts/constants';
 import { Reflector } from '@nestjs/core';
 import { UserType } from 'src/auth/Roles/userTypes.roles';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
 export class AuthRolesGuard implements CanActivate {
@@ -15,9 +16,22 @@ export class AuthRolesGuard implements CanActivate {
         
     ){}
     async canActivate(context: ExecutionContext){
+        
+        const isPublic = this.reflector.getAllAndOverride<boolean>(
+            IS_PUBLIC_KEY,
+            [
+                context.getHandler(),
+                context.getClass()
+            ]
+        )
+        if(isPublic){
+            return true;
+        }
+        
+        
+        
         const roles: UserType = this.reflector.getAllAndOverride('roles',
             [context.getHandler(), context.getClass()])
-
             if(!roles || roles.length === 0){
                 return false;
             }

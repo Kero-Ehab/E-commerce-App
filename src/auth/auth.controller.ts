@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { RegisterDTO } from './dto/register.dto';
 import { LoginDTO } from './dto/login.dto';
 import { ChangePasswordDTO } from './dto/changePassword.dto';
+import { Public } from './decorators/public.decorator';
 
 
 @Controller('auth')
@@ -11,12 +12,13 @@ export class AuthController {
     private readonly authService: AuthService
   ) {}
 
-    
+    @Public()
     @Post('register')
     register(@Body() registerDto:RegisterDTO){
       return this.authService.register(registerDto)
     }
-
+    
+    @Public()
     @Post('login')
     login(@Body() loginDto:LoginDTO){
       return this.authService.login(loginDto)

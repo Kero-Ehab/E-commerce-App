@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { EmailModule } from './common/email/email.module';
 import { CategoryModule } from './category/category.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { UserModule } from './user/user.module';
 
 
 @Module({
@@ -29,7 +30,8 @@ import { UploadsModule } from './uploads/uploads.module';
     }),
     AuthModule,
     EmailModule,
-    CategoryModule
+    CategoryModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService],

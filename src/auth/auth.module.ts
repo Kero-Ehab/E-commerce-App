@@ -35,13 +35,13 @@ import { AuthRolesGuard } from './guards/roles.guards';
   controllers: [AuthController],
   providers: [
     AuthService,
-  // {
-  //   provide:APP_GUARD,
-  //   useClass:AuthGuard,
-  // },{
-  //   provide:APP_GUARD,
-  //   useClass:AuthRolesGuard,
-  // }
+  {
+    provide:APP_GUARD,
+    useClass:AuthGuard,
+  },{
+    provide:APP_GUARD,
+    useClass:AuthRolesGuard,
+  }
   ],
 })
 export class AuthModule {}

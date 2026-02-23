@@ -5,6 +5,7 @@ import { UserSchema } from './schema/user-schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { diskStorage } from 'multer';
 import { MulterModule } from '@nestjs/platform-express';
+import { UserModule } from 'src/user/user.module';
 @Module({
   imports: [
     MongooseModule.forFeature([{name:'User', schema: UserSchema}]),
@@ -26,7 +27,8 @@ import { MulterModule } from '@nestjs/platform-express';
                     },
                     limits:{fileSize: 1024*1024*2}//2MB
         }
-    )
+    ),
+    UserModule
   ],
   controllers: [UserMangmentController],
   providers: [UserMangmentService],
