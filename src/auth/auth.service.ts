@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, UnauthorizedException} from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegisterDTO } from './dto/register.dto';
 import { LoginDTO } from './dto/login.dto';
 import {ChangePasswordDTO} from './dto/changePassword.dto'
@@ -23,6 +23,7 @@ export class AuthService {
     this.saltRounds= Number(this.configService.get<string>('BCRYPT_SALT_ROUNDS','10'))
   }
   
+    
     async register(registerDto:RegisterDTO){
       const {email , password, name, phoneNumber} = registerDto;
       const userExist = await this.userModel.findOne({email}) 
@@ -34,7 +35,8 @@ export class AuthService {
         throw new ConflictException('Phone number already registered');
       }
       const hashPassword = await bcrypt.hash(password, this.saltRounds)
-      const user =  await this.userModel.create({...RegisterDTO, password:hashPassword})
+      // spread the incoming DTO (not the class) so the actual values are stored
+      const user = await this.userModel.create({ ...registerDto, password: hashPassword });
       
       return {
         user:{
@@ -44,7 +46,7 @@ export class AuthService {
         phoneNumber: user.phoneNumber || ''        
       }}
     }
-
+    
     async login(loginDto:LoginDTO){
       const {email, password} = loginDto;
       const userExist = await this.userModel.findOne({email}).select('+password')
@@ -57,20 +59,13 @@ export class AuthService {
         throw new UnauthorizedException('Invalid Email or Password')
       }
       const payload = {
-        email:userExist.email,
-        password:userExist.password
-      }
-      //return {message:"login done"}
-      const acessToken = await this.jwtService.signAsync(payload)
-
-      const refreshToken = await this.jwtService.signAsync(payload)
-      
-      
-      await this.emailService.sendLogInEmail(userExist.email)
-
-      return {acessToken, refreshToken }
-
-
+        sub: userExist._id.toString(),
+        email: userExist.email,
+        role:userExist.role
+      };
+      const acessToken = await this.jwtService.signAsync(payload);
+      const refreshToken = await this.jwtService.signAsync(payload);
+      return { acessToken, refreshToken };
     }
 
     async logout(userId:string){

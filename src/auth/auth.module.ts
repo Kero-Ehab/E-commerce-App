@@ -13,7 +13,6 @@ import { AuthGuard } from './guards/auth.guards';
 import { AuthRolesGuard } from './guards/roles.guards';
 @Module({
   imports: [
-    UserMangmentModule,
     MailerModule,
     EmailModule,
     MongooseModule.forFeature([
@@ -34,7 +33,7 @@ import { AuthRolesGuard } from './guards/roles.guards';
   ],
   controllers: [AuthController],
   providers: [
-    AuthService,
+    AuthService,AuthGuard,AuthRolesGuard,
   {
     provide:APP_GUARD,
     useClass:AuthGuard,
@@ -43,5 +42,6 @@ import { AuthRolesGuard } from './guards/roles.guards';
     useClass:AuthRolesGuard,
   }
   ],
+  exports:[JwtModule,AuthService]
 })
 export class AuthModule {}

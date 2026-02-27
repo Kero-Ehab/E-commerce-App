@@ -23,7 +23,7 @@ export class AuthController {
     login(@Body() loginDto:LoginDTO){
       return this.authService.login(loginDto)
     }
-
+    
     @Post('logout/:id')
     logout(userId:string){
       return this.authService.logout(userId)

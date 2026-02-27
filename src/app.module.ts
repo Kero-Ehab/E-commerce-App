@@ -9,6 +9,10 @@ import { EmailModule } from './common/email/email.module';
 import { CategoryModule } from './category/category.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { UserModule } from './user/user.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/guards/auth.guards';
+import { AuthRolesGuard } from './auth/guards/roles.guards';
+
 
 
 @Module({
@@ -34,6 +38,8 @@ import { UserModule } from './user/user.module';
     UserModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    
+  ],
 })
 export class AppModule {}

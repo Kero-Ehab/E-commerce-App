@@ -1,4 +1,5 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
+import { UserType } from 'src/auth/Roles/userTypes.roles';
 
 @Schema({timestamps:true})
 export class User {
@@ -37,6 +38,9 @@ export class User {
 
     @Prop()
     expiresAt:Date
+
+    @Prop({enum:UserType, default:UserType.NORMAL_USER})
+    role:string
 
 }
 

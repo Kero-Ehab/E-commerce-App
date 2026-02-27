@@ -16,8 +16,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserMangmentService } from './user-mangment.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type {Express, Response} from "express"
+import { Roles } from 'src/auth/decorators/user-role.decorator';
+import { UserType } from 'src/auth/Roles/userTypes.roles';
 
-
+@Roles(UserType.ADMIN)
 @Controller('user-mangment')
 export class UserMangmentController {
     constructor(
